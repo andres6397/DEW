@@ -4,24 +4,25 @@
       <img src="../assets/logo2.png" alt="logo" class="logoPhoto" />
     </header>
     <main>
-      <form>
+      <form @submit.prevent="registro">
         <h1>NUEVO USUARIO</h1>
         <label for="name"></label>
-        <input type="text" id="name" name="name" placeholder="Name" />
+        <input type="text" id="name" name="name" placeholder="Name" v-model="name" />
         <label for="surname"></label>
-        <input type="text" id="surname" name="surname" placeholder="Surname" />
-        <label for="user"></label>
-        <input type="text" id="user" name="user" placeholder="User" />
+        <input type="text" id="surname" name="surname" placeholder="Last name" v-model="last_name" />
+        <label for="email"></label>
+        <input type="text" id="email" name="email" placeholder="Email" v-model="email" />
         <label for="password"></label>
         <input
           type="password"
           id="password"
           name="password"
           placeholder="Password"
+          v-model="password"
         />
-        <label for="email"></label>
-        <input type="text" id="email" name="email" placeholder="Email" /><br />
-        <input type="submit" value="Submit" @click="goToPerfil()" /><br />
+        <label for="image"></label>
+        <input type="text" id="image" name="image" placeholder="Image" v-model="image"/><br />
+        <input type="submit" value="Submit" /><br />
       </form>
     </main>
   </body>
@@ -30,13 +31,32 @@
 <script>
 export default {
   name: 'RegistroPage',
-  
+
+   data(){
+    return{
+      name:'',
+      last_name:'',
+      email:'',
+      password:'',
+      image:''
+    }
+  },
+
   methods:{
-   goToPerfil(){
-   this.$router.push('/perfil'); 
+  async registro(){
+      var data = {
+        name: this.name,
+        last_name: this.last_name,
+        email: this.email,
+        password: this.password,
+        image: this.image
       }
-  }
+      await this.axios.post('http://puigmal.salle.url.edu/api/v2/users', data) 
+      this.$router.push('/');     
+    },
+     },
 }
+
 
 </script>
 

@@ -21,7 +21,7 @@
           v-model="password"
         /><br />
         <input type="submit" value="Login"/><br />
-        <a href="" @click="goToRegistrarse()">REGISTRARSE</a>
+        <a href="" @click="registrarse()">REGISTRARSE</a>
         
       </form>
     </main>
@@ -50,11 +50,18 @@ export default {
       await this.axios.post('http://puigmal.salle.url.edu/api/v2/users/login', data) 
       .then(response => {
         this.axios.defaults.headers.common['Authorization'] = 'Bearer' + response.data;
-        localStorage.setItem('token', response.data)
+        localStorage.setItem('token', response.data.accessToken)
+        localStorage.setItem('email', data.email) 
+       
         this.$router.push('/perfil'); 
       });      
+    },
+
+    registrarse(){
+      this.$router.push('/registro'); 
     }
-  },  
+  },
+
 }
 
 </script>

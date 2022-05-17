@@ -8,9 +8,9 @@
           </div>
           <div id="menu">
             <ul>
-              <li><a href="perfilUsuario.html">Perfil</a></li>
-              <li><a href="eventos.html">Eventos</a></li>
-              <li><a href="amigos.html">Amigos</a></li>
+              <li><a href="" @click="goperfil()">Perfil</a></li>
+              <li><a href="" @click="goeventos()">Eventos</a></li>
+              <li><a href="" @click="goamigos()">Amigos</a></li>
             </ul>
           </div>
         </div>
@@ -53,6 +53,18 @@
 //import axios from 'axios'
 export default {
   name: 'HomePage',
+
+      methods:{
+      goperfil(){
+      this.$router.push('/perfil'); 
+    },
+    goeventos(){
+      this.$router.push('/eventos'); 
+    },
+    goamigos(){
+      this.$router.push('/amigos'); 
+    }
+    }
 
   
 }
