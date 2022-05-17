@@ -20,7 +20,7 @@
       <section class="container">
         <h1 class="title">EVENTOS</h1>
         <div class="containerRight">
-          <button class="createEvent" onclick="location.href='crearEvento.html'">
+          <button class="createEvent" @click="gocrearEvento()">
             Crear
           </button>
           <button class="calendar">Calendario</button>
@@ -64,6 +64,9 @@ export default {
     },
     goamigos(){
       this.$router.push('/amigos'); 
+    },
+    gocrearEvento(){
+      this.$router.push('/crearEvento');
     }
     }
 }

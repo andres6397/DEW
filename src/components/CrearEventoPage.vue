@@ -21,32 +21,16 @@
       <h1 class="title">CREAR EVENTO</h1>
     </article>
     <article>
-      <form>
+      <form @submit.prevent="crearEvento">
         <label for="name"></label>
-        <input type="text" id="name" name="name" placeholder="Nombre" />
-        <label for="date"></label>
-        <input
-          type="date"
-          id="date"
-          name="date"
-          min="2010-01-01"
-          max="2022-12-31"
-        />
-        <label for="direccion"></label>
-        <input
-          type="text"
-          id="direccion"
-          name="direccion"
-          placeholder="Direccion"
-        />
-        <textarea
-          name="descripcion"
-          id="descripcion"
-          cols="40"
-          rows="15"
-          placeholder="Descripcion"
-          class="textareaForm"
-        ></textarea>
+        <input type="text" id="name" name="name" placeholder="Nombre" v-model="name"  />
+        <input type="text" id="image" name="image" placeholder="Image" v-model="image"/>
+        <input type="text" id="location" name="location" placeholder="Location" v-model="location"/>
+        <input type="text" id="description" name="description" placeholder="Description" v-model="description"/>
+        <input type="text" id="startDate" name="startDate" placeholder="Start Date" v-model="startDate"/>
+        <input type="text" id="endDate" name="endDate" placeholder="End Date" v-model="endDate"/>
+        <input type="number" id="participants" name="participants" placeholder="Number of participants" v-model="participants"/>
+        <input type="text" id="type" name="type" placeholder="type" v-model="type"/>
         <input type="submit" value="Submit" />
       </form>
     </article>
@@ -57,8 +41,50 @@
 <script>
 export default {
      name: 'HomePage',
+       data(){
+    return{
+      name:'',
+      image:'',
+      location:'',
+      description:'',
+      startDate:'',
+      endDate:'',
+      participants: '',
+      type:'',
+    }
+  },
 
-         methods:{
+  methods:{
+
+    async crearEvento(){
+      var data = {
+        name: this.name,
+        image: this.image,
+        location: this.location,
+        description:this.description,
+        eventStart_date:this.startDate,
+        eventEnd_date:this.endDate,
+        n_participators:this.participants,
+        type:this.type
+      }
+      const token = localStorage.getItem('token');
+      let apiConfig = {
+       headers: {
+        'Authorization': `Basic ${token}` 
+      }
+      }
+      
+      const api = 'http://puigmal.salle.url.edu/api/v2/events';
+      await this.axios.post(api,data,apiConfig).
+      then(response => {
+        console.log(response)
+        this.$router.push('/eventos');
+        
+      }) 
+
+    },
+
+
       goperfil(){
       this.$router.push('/perfil'); 
     },
