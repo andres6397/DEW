@@ -20,28 +20,51 @@
     <h1 class="title">AMISTADES</h1>
     <div class="container">
       <div class="container1">
-        <p class="info">Cantidad de amigos: X</p>
-        <p class="info">Total de usuarios: X</p>
-        <p class="info">Solicitudes de amistad: X</p>
+        <p class="info">Cantidad de amigos: {{this.friends}}</p>
+        <p class="info">Total de usuarios: {{this.users}}</p>
+        <p class="info">Solicitudes de amistad: {{this.requests}}</p>
         <p class="titleSoli">Solicitudes de amistad</p>
         <div class="solicitudes">
-          
+          <li v-for="(item,index) in totalRequests" :key="item.id">
+          <div class="usersRequests">
+            Solicitud {{index+1}} : {{item.name}}
+            <br>
+            <input type="checkbox" :value="item.id" v-model="checkRequests"/>
+          </div>
+          </li>
         </div>
-        <button class="buttons">Aceptar solicitudes</button>
+        <form @submit.prevent="acceptRequests">
+          <input type="submit" class ="buttons" value="Aceptar solicitudes" /><br />
+        </form>
+        
       </div>
       <div class="container2">
+
         <p class="titleFriends">Amigos</p>
         <div class="friends">
-          
+          <li v-for="(item2,index) in totalFriends" :key="item2.id">
+          <div class="usersFriends">
+            Amigo {{index+1}} : <img v-bind:src="item2.image" /> {{item2.name}}  
+          </div>   
+          </li>
         </div>
+
       </div>
       <div class="container3">
-        <input class="search" type="text" placeholder="Buscar Amigo" />
+        <form @submit.prevent="searchFriends">
+          <input class="search" type="text" placeholder="Buscar Amigo" v-model="searchFriend" />
+        </form>
         <div class="searchFriend">
-          
-          
+          <li v-for="(item3,index) in searchFriendList" :key="item3.id">
+          <div class="usersSearch">
+           <label> Persona {{index+1}} : <img v-bind:src="item3.image" /> {{item3.name}} {{item3.last_name}}</label>
+            <input type="checkbox" class="checkfriends" :value="item3.id" v-model="checkFriends"/>
+          </div>
+          </li>
         </div>
-        <button class="buttons">Enviar solicitudes</button>
+        <form @submit.prevent="sendRequests">
+          <input type="submit" class ="buttons" value="Enviar solicitudes" /><br />
+        </form>
       </div>
     </div>
   </main>
@@ -53,8 +76,68 @@
 //import axios from 'axios'
 export default {
   name: 'HomePage',
+    async mounted(){
+      const token = localStorage.getItem('token');
+      const api = 'http://puigmal.salle.url.edu/api/v2/friends';
+      await this.axios.get(api, {headers: {"Authorization" : `Bearer ${token}`}}).
+      then(r =>{
+        this.totalFriends = r.data
+        this.friends=r.data.length
+      })
 
-      methods:{
+      const api1 = 'http://puigmal.salle.url.edu/api/v2/users';
+      await this.axios.get(api1, {headers: {"Authorization" : `Bearer ${token}`}}).
+      then(res =>{
+        this.users=res.data.length
+        this.totalUsers = res.data
+      })
+      
+      
+      const api2 = 'http://puigmal.salle.url.edu/api/v2/friends/requests';
+      await this.axios.get(api2, {headers: {"Authorization" : `Bearer ${token}`}}).
+      then(response =>{
+      this.totalRequests = response.data
+      this.requests=response.data.length
+       
+        
+      })
+
+    },
+      
+    methods:{
+    async acceptRequests(){
+      const token = localStorage.getItem('token');
+      for (let i = 0; i < this.checkRequests.length; i++) {
+       const api = 'http://puigmal.salle.url.edu/api/v2/friends/'+this.checkRequests[i];
+       await this.axios.put(api, {headers: {"Authorization" : `Bearer ${token}`}}).
+       then(r =>{
+         console.log(r)
+       })
+          
+      }
+    },
+
+    async sendRequests(){
+        const token = localStorage.getItem('token');
+        for (let i = 0; i < this.checkFriends.length; i++) {
+          const api = 'http://puigmal.salle.url.edu/api/v2/friends/'+this.checkFriends[i];
+           await this.axios.post(api, {headers: {"Authorization" : `Bearer ${token}`}}).
+           then(r =>{
+              console.log(r)
+           })
+        }
+    },
+    async searchFriends(){
+      const token = localStorage.getItem('token');
+      const api = 'http://puigmal.salle.url.edu/api/v2/users/search?s='+this.searchFriend;
+      for (let i = 0; i < this.totalFriends.length; i++) {
+        await this.axios.get(api, {headers: {"Authorization" : `Bearer ${token}`}}).
+        then(res =>{
+            this.searchFriendList=res.data
+            console.log(this.searchFriendList)
+        })
+      }
+    },
       goperfil(){
       this.$router.push('/perfil'); 
     },
@@ -64,9 +147,22 @@ export default {
     goamigos(){
       this.$router.push('/amigos'); 
     }
-    }
+    },
 
-  
+    data(){
+      return{
+        friends: '',
+        users: '',
+        requests: '',
+        totalRequests:[],
+        totalFriends:[],
+        checkRequests: [],
+        totalUsers: [],
+        searchFriend:'',
+        searchFriendList:[],
+        checkFriends:[]
+      }
+    }
 }
 </script>
 
@@ -307,6 +403,15 @@ button {
   padding: 10px;
   scrollbar-color: #c1272d #ffffff;
   scrollbar-width: thin;
+  
+}
+
+.solicitudes input{
+  float:left;
+}
+
+.solicitudes p{
+  margin-bottom:20px;
 }
 
 .listSoli {
@@ -328,6 +433,33 @@ button {
   text-align: center;
   font-weight: bold;
   font-size: 20px;
+}
+
+.usersRequests{
+  margin-bottom: 50px;
+}
+
+.usersFriends{
+  margin-bottom: 50px;
+  
+}
+
+.usersSearch{
+ margin-bottom: 50px;
+}
+
+.usersSearch img {
+  border-radius: 50%;
+  vertical-align:middle;
+  height: 50px;
+  width: 50px;
+}
+
+.usersFriends img{
+  border-radius: 50%;
+  vertical-align:middle;
+  height: 50px;
+  width: 50px;
 }
 
 .titleSoli {
@@ -389,8 +521,10 @@ button {
 .searchFriend input[type="checkbox"] {
   margin-left: 30px;
   transform: scale(1.3);
-  text-align: right;
-  float: right;
+  margin-right: 0;
+  display: grid;
+  place-content: center;
+  
 }
 
 .searchFriend p {
