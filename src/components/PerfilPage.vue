@@ -37,6 +37,9 @@
           <button type="submit" value="submit" class="botonMovil">Borrar cuenta</button>
         </form>
       </div>
+      <div class="divMovil">
+        <button value="submit" class="botonMovil" @click="gomensajes()">Mensajes</button>
+      </div>
     </section>
   </body>
 </template>
@@ -91,6 +94,9 @@ export default {
     },
     goamigos(){
       this.$router.push('/amigos'); 
+    },
+    gomensajes(){
+      this.$router.push('/mensajes');
     }
     },
 
@@ -172,6 +178,7 @@ export default {
 }
 .divMovil {
   margin-left: 20px;
+  margin-bottom: 5px;
 }
 
 button {
