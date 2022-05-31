@@ -25,13 +25,13 @@
         <p class="info">Solicitudes de amistad: {{this.requests}}</p>
         <p class="titleSoli">Solicitudes de amistad</p>
         <div class="solicitudes">
-          <li v-for="(item,index) in totalRequests" :key="item.id">
+          <ul v-for="(item,index) in totalRequests" :key="item.id">
           <div class="usersRequests">
             Solicitud {{index+1}} : {{item.name}}
             <br>
             <input type="checkbox" :value="item.id" v-model="checkRequests"/>
           </div>
-          </li>
+          </ul>
         </div>
         <form @submit.prevent="acceptRequests">
           <input type="submit" class ="buttons" value="Aceptar solicitudes" /><br />
@@ -42,11 +42,13 @@
 
         <p class="titleFriends">Amigos</p>
         <div class="friends">
-          <li v-for="(item2,index) in totalFriends" :key="item2.id">
+          <ul v-for="(item2,index) in totalFriends" :key="item2.id">
+          <div v-if="item2.id != null">
           <div class="usersFriends">
-            Amigo {{index+1}} : <img v-bind:src="item2.image" /> {{item2.name}}  
+            Amigo {{index+1}} : <img v-bind:src="item2.image" /> {{item2.name}} 
+          </div> 
           </div>   
-          </li>
+          </ul>
         </div>
 
       </div>
@@ -55,12 +57,12 @@
           <input class="search" type="text" placeholder="Buscar Amigo" v-model="searchFriend" />
         </form>
         <div class="searchFriend">
-          <li v-for="(item3,index) in searchFriendList" :key="item3.id">
+          <ul v-for="(item3,index) in searchFriendList" :key="item3.id">
           <div class="usersSearch">
            <label> Persona {{index+1}} : <img v-bind:src="item3.image" /> {{item3.name}} {{item3.last_name}}</label>
             <input type="checkbox" class="checkfriends" :value="item3.id" v-model="checkFriends"/>
           </div>
-          </li>
+          </ul>
         </div>
         <form @submit.prevent="sendRequests">
           <input type="submit" class ="buttons" value="Enviar solicitudes" /><br />
@@ -108,24 +110,30 @@ export default {
     async acceptRequests(){
       const token = localStorage.getItem('token');
       for (let i = 0; i < this.checkRequests.length; i++) {
-       const api = 'http://puigmal.salle.url.edu/api/v2/friends/'+this.checkRequests[i];
-       await this.axios.put(api, {headers: {"Authorization" : `Bearer ${token}`}}).
-       then(r =>{
-         console.log(r)
-       })
-          
-      }
-    },
+        const api = 'http://puigmal.salle.url.edu/api/v2/friends/'+this.checkRequests[i];
+        fetch(api,{
+          method:'put',
+          headers: new Headers({
+            'Authorization': 'Bearer '+token,
 
+          })
+        })
+      }
+      window.location.reload();
+     
+    },
     async sendRequests(){
         const token = localStorage.getItem('token');
         for (let i = 0; i < this.checkFriends.length; i++) {
           const api = 'http://puigmal.salle.url.edu/api/v2/friends/'+this.checkFriends[i];
-           await this.axios.post(api, {headers: {"Authorization" : `Bearer ${token}`}}).
-           then(r =>{
-              console.log(r)
-           })
-        }
+          fetch(api,{
+            method:'post',
+            headers: new Headers({
+            'Authorization': 'Bearer '+token,
+          })
+        })
+      }
+      window.location.reload();
     },
     async searchFriends(){
       const token = localStorage.getItem('token');
