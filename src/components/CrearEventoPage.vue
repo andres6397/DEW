@@ -71,7 +71,7 @@ export default {
       let apiConfig = {
        headers: {
         'Authorization': `Basic ${token}` 
-      }
+        }
       }
       
       const api = 'http://puigmal.salle.url.edu/api/v2/events';

@@ -5,6 +5,7 @@ import PerfilPage from '@/components/PerfilPage.vue'
 import EventosPage from '@/components/EventosPage.vue'
 import CrearEventoPage from '@/components/CrearEventoPage.vue'
 import AmigosPage from '@/components/AmigosPage.vue'
+import MensajesPage from '@/components/MensajesPage.vue'
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: '/amigos',
     name: 'amigos',
     component: AmigosPage
+  },
+  {
+    path: '/mensajes',
+    name: 'mensajes',
+    component: MensajesPage
   },
 ]
 
